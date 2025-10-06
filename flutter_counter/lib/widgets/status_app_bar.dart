@@ -37,12 +37,12 @@ class StatusAppBar extends StatelessWidget implements PreferredSizeWidget {
 
 Widget _makeIcon(String text, IconData icon) {
   return Tooltip(
-      message: text,
-      child: SizedBox(width: 40, height: null, child: Icon(icon, size: 24)));
+    message: text,
+    child: SizedBox(width: 40, height: null, child: Icon(icon, size: 24)),
+  );
 }
 
 Widget _getStatusIcon(SyncStatus status) {
-  print(status);
   if (status.anyError != null) {
     // The error message is verbose, could be replaced with something
     // more user-friendly

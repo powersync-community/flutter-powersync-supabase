@@ -14,7 +14,7 @@ services:
     networks:
       - supabase_network_powersync
     ports:
-      - 8080:8080
+      - ${PS_PORT}:${PS_PORT}
 
 networks:
   supabase_network_powersync:

@@ -6,3 +6,4 @@ env.local
 *.env
 !.env.local.template
 !*.env.template
+signing_keys.json

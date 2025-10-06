@@ -139,7 +139,7 @@ bool isLoggedIn() {
 }
 
 Future<void> signInAnonymously() async {
-  print('signInAnonymously');
+  log.info('signInAnonymously invoked');
   // await Supabase.instance.client.auth.signInAnonymously();
 }
 
@@ -176,8 +176,11 @@ Future<void> openDatabase() async {
   currentConnector = SupabaseConnector();
   // await signInAnonymously();
   final session = await Supabase.instance.client.auth.signInAnonymously();
-  print(session);
-  print(Supabase.instance.client.auth.currentSession?.accessToken);
+  log.info('Anonymous sign-in session: ${session.runtimeType}');
+  final token = Supabase.instance.client.auth.currentSession?.accessToken;
+  if (token != null) {
+    log.fine('Access token length: ${token.length}');
+  }
   db.connect(connector: currentConnector, options: options);
 
   Supabase.instance.client.auth.onAuthStateChange.listen((data) async {

@@ -37,28 +37,33 @@ class Counter {
 
   /// Watch all counters.
   static Stream<List<Counter>> watchCounters() {
-    return db
-        .watch('SELECT * FROM $countersTable ORDER BY created_at, id')
-        .map((results) {
-      return results.map(Counter.fromRow).toList(growable: false);
-    });
+    return db.watch('SELECT * FROM $countersTable ORDER BY created_at, id').map(
+      (results) {
+        return results.map(Counter.fromRow).toList(growable: false);
+      },
+    );
   }
 
   /// Create a new counter.
   static Future<Counter> create() async {
-    final results = await db.execute('''
+    final results = await db.execute(
+      '''
       INSERT INTO
         $countersTable(id, count, owner_id, created_at)
         VALUES(uuid(), ?, ?, datetime())
       RETURNING *
-      ''', [0, getUserId()]);
+      ''',
+      [0, getUserId()],
+    );
     return Counter.fromRow(results.first);
   }
 
   /// Increment the counter's value by one.
   Future<void> increment() async {
-    await db.execute('UPDATE $countersTable SET count = ? WHERE id = ?',
-        [count + 1, id]);
+    await db.execute('UPDATE $countersTable SET count = ? WHERE id = ?', [
+      count + 1,
+      id,
+    ]);
   }
 
   /// Delete this counter.
