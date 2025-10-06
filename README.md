@@ -1,13 +1,57 @@
-enable_anonymous_sign_ins = true
-signing_keys_path = "./signing_keys.json"
+# Flutter + PowerSync + Supabase
 
-both uncommented in config.toml
+A starter project to help you quickly set up and run a local environment with Flutter, PowerSync, and Supabase.
 
+## Configuration
+
+The `./supabase/config.toml` file defines the configuration for your local Supabase instance.
+
+The following settings have already been added and are required for this project:
+- `enable_anonymous_sign_ins = true` - Allows clients to generate JWT tokens without signing in using an email/password or OAuth provider. The `./flutter_counter` project is configured to sign users in **anonymously**.
+- `signing_keys_path = "./signing_keys.json"` - Enables asymmetric JWTs for your local Supabase instance. 
+
+## Getting Started
+
+Copy the environment template file:
+```bash
+cp .env.local.template .env.local
+```
+
+### 1. Install the Supabase CLI (See [the documentation](https://supabase.com/docs/guides/local-development/cli/getting-started?queryGroups=platform&platform=macos#installing-the-supabase-cli) for more installation options)
+
+### macOS
+```bash
+brew install supabase/tap/supabase
+```
+
+### Windows
+```bash
+scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
+scoop install supabase
+```
+
+### 2. Generate Supabase Signing Keys
+
+Run the following command to generate the `./supabase/signing_keys.json` file.
+```bash
 supabase gen signing-key
+```
+
+### 3. Start Supabase locally
+
+```bash
 supabase start
+```
 
-docker compose --file ./docker/compose.yaml --en
-v-file .env.local up -d
+### 4. Start the PowerSync service
 
+```bash
+docker compose --file ./docker/compose.yaml --env-file .env.local up -d
+```
 
-flutter run -d emulator-5554 --no-dds --disable-service-auth-codes --no-pub
+### 5. Run the Flutter Counter Demo
+
+```bash
+cd flutter_counter
+flutter run
+```
