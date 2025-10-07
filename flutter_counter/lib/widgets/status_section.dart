@@ -17,15 +17,12 @@ class StatusSection extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(child: _StatusSection()),
-                  const SizedBox(width: 16)
+                  const SizedBox(width: 16),
                 ],
               )
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _StatusSection(),
-                  const SizedBox(height: 16)
-                ],
+                children: [_StatusSection(), const SizedBox(height: 16)],
               );
 
         return Padding(
@@ -101,5 +98,3 @@ class _StatusSection extends StatelessWidget {
     );
   }
 }
-
-

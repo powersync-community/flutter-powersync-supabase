@@ -28,6 +28,13 @@ flutter pub get
 
 ## 3. Run the app
 
+To run the `web` build, ensure you have a `/web/sqlite3.wasm` file present. This WebAssembly file is required for SQLite functionality on the web.
+
+To download the required WASM file, run:
+```bash
+ dart run powersync:setup_web --no-worker
+```
+
 ```bash
 flutter run
 ```

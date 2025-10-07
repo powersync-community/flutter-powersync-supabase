@@ -42,9 +42,7 @@ class MyApp extends StatelessWidget {
           }
           if (snapshot.hasError) {
             return Scaffold(
-              body: Center(
-                child: Text('Init failed: ${snapshot.error}'),
-              ),
+              body: Center(child: Text('Init failed: ${snapshot.error}')),
             );
           }
           return const CountersPage();
@@ -114,10 +112,7 @@ class _HomeBody extends StatelessWidget {
           ),
         ),
         SizedBox(height: 8),
-        SizedBox(
-          height: 600,
-          child: CountersList(),
-        ),
+        SizedBox(height: 600, child: CountersList()),
       ],
     );
   }
@@ -174,7 +169,9 @@ class CountersList extends StatelessWidget {
               onDismissed: (direction) async {
                 final messenger = ScaffoldMessenger.of(context);
                 await counter.delete();
-                messenger.showSnackBar(const SnackBar(content: Text('Counter deleted')));
+                messenger.showSnackBar(
+                  const SnackBar(content: Text('Counter deleted')),
+                );
               },
               child: _buildCounterCard(counter),
             );

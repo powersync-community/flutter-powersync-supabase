@@ -10,8 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  powersync: ^1.15.2
-  supabase_flutter: ^2.0.1
+  powersync: ^1.16.1
+  supabase_flutter: ^2.10.1
   path_provider: ^2.1.1
   path: ^1.8.3
   logging: ^1.2.0

@@ -1,4 +1,5 @@
 // This file performs setup of the PowerSync database
+import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -148,8 +149,11 @@ String? getUserId() {
 }
 
 Future<String> getDatabasePath() async {
-  // On all platforms store under application support; web uses in-memory
-  const dbFilename = 'powersync-demo.db';
+  const dbFilename = 'powersync-benchmarks.db';
+  // getApplicationSupportDirectory is not supported on Web
+  if (kIsWeb) {
+    return dbFilename;
+  }
   final dir = await getApplicationSupportDirectory();
   return join(dir.path, dbFilename);
 }
@@ -186,6 +190,7 @@ Future<void> openDatabase() async {
     } else if (event == AuthChangeEvent.signedOut) {
       // Implicit sign out - disconnect, but don't delete data
       currentConnector = null;
+      // Disconnect PowerSync
       await db.disconnect();
     } else if (event == AuthChangeEvent.tokenRefreshed) {
       // Supabase token refreshed - trigger token refresh for PowerSync.
@@ -197,5 +202,4 @@ Future<void> openDatabase() async {
 /// Explicit sign out - clear database and log out.
 Future<void> logout() async {
   await Supabase.instance.client.auth.signOut();
-  await db.disconnectAndClear();
 }
