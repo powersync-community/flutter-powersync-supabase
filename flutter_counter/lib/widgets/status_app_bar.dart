@@ -4,6 +4,7 @@ import 'package:powersync/powersync.dart';
 
 import '../powersync.dart';
 
+/// App bar that reflects current PowerSync connection/sync status
 class StatusAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget title;
 
@@ -42,6 +43,7 @@ Widget _makeIcon(String text, IconData icon) {
   );
 }
 
+/// Returns an icon that represents the current sync status
 Widget _getStatusIcon(SyncStatus status) {
   if (status.anyError != null) {
     // The error message is verbose, could be replaced with something

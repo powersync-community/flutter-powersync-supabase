@@ -1,5 +1,4 @@
 // This file performs setup of the PowerSync database
-import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -138,9 +137,9 @@ bool isLoggedIn() {
   return Supabase.instance.client.auth.currentSession?.accessToken != null;
 }
 
-Future<void> signInAnonymously() async {
+Future<AuthResponse> signInAnonymously() async {
   log.info('signInAnonymously invoked');
-  // await Supabase.instance.client.auth.signInAnonymously();
+  return await Supabase.instance.client.auth.signInAnonymously();
 }
 
 /// id of the user currently logged in
@@ -149,11 +148,8 @@ String? getUserId() {
 }
 
 Future<String> getDatabasePath() async {
+  // On all platforms store under application support; web uses in-memory
   const dbFilename = 'powersync-demo.db';
-  // getApplicationSupportDirectory is not supported on Web
-  if (kIsWeb) {
-    return dbFilename;
-  }
   final dir = await getApplicationSupportDirectory();
   return join(dir.path, dbFilename);
 }
@@ -161,7 +157,7 @@ Future<String> getDatabasePath() async {
 const options = SyncOptions(syncImplementation: SyncClientImplementation.rust);
 
 Future<void> openDatabase() async {
-  // Open the local database
+  // Open the local database and initialize sync/auth integrations
   db = PowerSyncDatabase(
     schema: schema,
     path: await getDatabasePath(),
@@ -174,9 +170,7 @@ Future<void> openDatabase() async {
   SupabaseConnector? currentConnector;
 
   currentConnector = SupabaseConnector();
-  // await signInAnonymously();
-  final session = await Supabase.instance.client.auth.signInAnonymously();
-  log.info('Anonymous sign-in session: ${session.runtimeType}');
+  await signInAnonymously();
   final token = Supabase.instance.client.auth.currentSession?.accessToken;
   if (token != null) {
     log.fine('Access token length: ${token.length}');
@@ -202,6 +196,6 @@ Future<void> openDatabase() async {
 
 /// Explicit sign out - clear database and log out.
 Future<void> logout() async {
-  // await Supabase.instance.client.auth.signOut();
-  // await db.disconnectAndClear();
+  await Supabase.instance.client.auth.signOut();
+  await db.disconnectAndClear();
 }

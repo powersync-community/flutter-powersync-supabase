@@ -2,6 +2,12 @@
 
 A starter project to help you quickly set up and run a local environment with Flutter, PowerSync, and Supabase.
 
+## Prerequisites
+You will need the following tools installed on your local machine:
+- [Docker](https://docs.docker.com/get-docker/)
+- [Supabase CLI](supabase.com/docs/guides/local-development/cli/getting-started)
+- [Flutter](https://flutter.dev/docs/get-started/install)
+
 ## Configuration
 
 The `./supabase/config.toml` file defines the configuration for your local Supabase instance.

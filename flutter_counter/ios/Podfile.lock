@@ -72,7 +72,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   app_links: 3dbc685f76b1693c66a6d9dd1e9ab6f73d97dc0a
-  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   powersync-sqlite-core: 42c4a42a692b3b770a5488778789430d67a39b49
   powersync_flutter_libs: ecbd37268a3705351178a05c81434592f0dcc6e5
@@ -81,6 +81,6 @@ SPEC CHECKSUMS:
   sqlite3_flutter_libs: 616267f2fca40e9c6af8c5d82324e05667040b6e
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
 
-PODFILE CHECKSUM: 4305caec6b40dde0ae97be1573c53de1882a07e5
+PODFILE CHECKSUM: 3c63482e143d1b91d2d2560aee9fb04ecc74ac7e
 
 COCOAPODS: 1.16.2

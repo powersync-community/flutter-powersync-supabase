@@ -66,6 +66,15 @@ class Counter {
     ]);
   }
 
+  /// Decrement the counter's value by one. No-op at zero.
+  Future<void> decrement() async {
+    if (count <= 0) return;
+    await db.execute('UPDATE $countersTable SET count = ? WHERE id = ?', [
+      count - 1,
+      id,
+    ]);
+  }
+
   /// Delete this counter.
   Future<void> delete() async {
     await db.execute('DELETE FROM $countersTable WHERE id = ?', [id]);

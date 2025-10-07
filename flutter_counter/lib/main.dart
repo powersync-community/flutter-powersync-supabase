@@ -1,35 +1,28 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import './models/schema.dart';
 import './models/counter.dart';
 import './powersync.dart';
 import './widgets/status_app_bar.dart';
+import 'widgets/status_section.dart';
 
 void main() async {
   // Set up logging for debugging
   Logger.root.level = Level.INFO;
   Logger.root.onRecord.listen((record) {
-    if (kDebugMode) {
-      print('[${record.loggerName}] ${record.level.name}: ${record.message}');
-      if (record.error != null) print(record.error);
-      if (record.stackTrace != null) print(record.stackTrace);
-    }
+    // Print logs in debug/profile, suppress in release implicitly
+    // ignore: avoid_print
+    print('[${record.loggerName}] ${record.level.name}: ${record.message}');
+    if (record.error != null) print(record.error);
+    if (record.stackTrace != null) print(record.stackTrace);
   });
 
-  // Initialize Flutter and open database connection
+  // Initialize Flutter; do not block first frame on DB init
   WidgetsFlutterBinding.ensureInitialized();
-  await openDatabase();
-
-  final loggedIn = isLoggedIn();
-
-  runApp(MyApp(loggedIn: loggedIn));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final bool loggedIn;
-
-  const MyApp({super.key, required this.loggedIn});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +32,24 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const CountersPage(),
+      home: FutureBuilder<void>(
+        future: openDatabase(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+          if (snapshot.hasError) {
+            return Scaffold(
+              body: Center(
+                child: Text('Init failed: ${snapshot.error}'),
+              ),
+            );
+          }
+          return const CountersPage();
+        },
+      ),
     );
   }
 }
@@ -52,7 +62,7 @@ class CountersPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const StatusAppBar(title: Text('Counter Demo')),
-      body: const CountersList(),
+      body: const _HomeBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Counter.create();
@@ -83,6 +93,32 @@ class CountersPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _HomeBody extends StatelessWidget {
+  const _HomeBody();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: const [
+        StatusSection(),
+        SizedBox(height: 8),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'Counters',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+        SizedBox(height: 8),
+        SizedBox(
+          height: 600,
+          child: CountersList(),
+        ),
+      ],
     );
   }
 }
@@ -135,10 +171,6 @@ class CountersList extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 16),
                 child: const Icon(Icons.delete, color: Colors.white, size: 32),
               ),
-              // Confirm before deleting
-              confirmDismiss: (direction) async {
-                return await _showDeleteConfirmation(context);
-              },
               onDismissed: (direction) async {
                 final messenger = ScaffoldMessenger.of(context);
                 await counter.delete();
@@ -203,12 +235,7 @@ class CountersList extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.remove, color: Colors.red),
                   onPressed: () async {
-                    if (counter.count > 0) {
-                      await db.execute(
-                        'UPDATE $countersTable SET count = ? WHERE id = ?',
-                        [counter.count - 1, counter.id],
-                      );
-                    }
+                    await counter.decrement();
                   },
                 ),
                 // Current count display
@@ -240,28 +267,6 @@ class CountersList extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  /// Shows confirmation dialog before deleting a counter
-  Future<bool?> _showDeleteConfirmation(BuildContext context) {
-    return showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Counter?'),
-        content: const Text('This action cannot be undone.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Delete', style: TextStyle(color: Colors.white)),
-          ),
-        ],
       ),
     );
   }
