@@ -65,8 +65,10 @@ class _StatusSection extends StatelessWidget {
                         : '0%',
                   ),
                   _kv('hasSynced', (status.hasSynced ?? false).toString()),
-                  _kv('lastSyncedAt', status.lastSyncedAt?.toString() ?? 'N/A'),
-                  _kv('userId', getUserId() ?? 'Not authenticated'),
+                  _kv(
+                    'lastSyncedAt',
+                    status.lastSyncedAt?.toIso8601String() ?? 'N/A',
+                  ),
                 ],
               ],
             );

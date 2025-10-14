@@ -174,12 +174,23 @@ Future<void> openDatabase() async {
   SupabaseConnector? currentConnector;
 
   currentConnector = SupabaseConnector();
-  await signInAnonymously();
-  final token = Supabase.instance.client.auth.currentSession?.accessToken;
-  if (token != null) {
-    log.fine('Access token length: ${token.length}');
+
+  if (isLoggedIn()) {
+    // If the user is already logged in, connect immediately.
+    // Otherwise, connect once logged in.
+    // currentConnector = SupabaseConnector();
+    db.connect(connector: currentConnector, options: options);
+  } else {
+    await signInAnonymously();
+    db.connect(connector: currentConnector, options: options);
   }
-  db.connect(connector: currentConnector, options: options);
+
+  // await signInAnonymously();
+  // final token = Supabase.instance.client.auth.currentSession?.accessToken;
+  // if (token != null) {
+  //   log.fine('Access token length: ${token.length}');
+  // }
+  // db.connect(connector: currentConnector, options: options);
 
   Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
     final AuthChangeEvent event = data.event;
@@ -202,4 +213,5 @@ Future<void> openDatabase() async {
 /// Explicit sign out - clear database and log out.
 Future<void> logout() async {
   await Supabase.instance.client.auth.signOut();
+  await db.disconnectAndClear();
 }
