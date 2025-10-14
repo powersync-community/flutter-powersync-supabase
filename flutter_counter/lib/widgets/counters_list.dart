@@ -31,7 +31,7 @@ class CountersList extends StatelessWidget {
 
         // Build the list of counter cards
         return ListView.builder(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           itemCount: counters.length,
           itemBuilder: (context, index) {
             final counter = counters[index];

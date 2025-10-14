@@ -3,33 +3,15 @@ import 'package:powersync/powersync.dart' hide Column;
 
 import '../powersync.dart';
 
-/// Displays PowerSync connection status, SDK info and helpful links.
+/// Displays PowerSync connection status
 class StatusSection extends StatelessWidget {
   const StatusSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isWide = constraints.maxWidth >= 700;
-        final content = isWide
-            ? Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(child: _StatusSection()),
-                  const SizedBox(width: 16),
-                ],
-              )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [_StatusSection(), const SizedBox(height: 16)],
-              );
-
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: content,
-        );
-      },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      child: _StatusSection(),
     );
   }
 }
@@ -46,11 +28,12 @@ class _StatusSection extends StatelessWidget {
           builder: (context, snapshot) {
             final status = snapshot.data;
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
                   'PowerSync Status',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 if (status != null) ...[
@@ -82,6 +65,7 @@ class _StatusSection extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: RichText(
+        textAlign: TextAlign.center,
         text: TextSpan(
           style: const TextStyle(
             fontFamily: 'monospace',

@@ -1,6 +1,6 @@
 # Getting Started
 
-This project is a Flutter app equipped with PowerSync for efficient data synchronization, specifically built to perform load tests. It allows you to measure how long the initial sync takes with a hosted backend.
+A demo Flutter app that demonstrates real-time counter functionality powered by a locally hosted Supabase backend and PowerSync for data synchronization.
 
 ## Prerequisites
 

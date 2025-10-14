@@ -59,5 +59,10 @@ docker compose --file ./docker/compose.yaml --env-file .env.local up -d
 
 ```bash
 cd flutter_counter
+
+flutter pub get
+
+cp lib/app_config_template.dart lib/app_config.dart
+
 flutter run
 ```
