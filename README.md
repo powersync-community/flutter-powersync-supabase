@@ -45,12 +45,14 @@ supabase gen signing-key
 
 ### 3. Start Supabase locally
 
+There is already a migration in `supabase/migrations/20250819090132_counters.sql` that creates the **counters** table, creates the **powersync** publication and seeds one counter record
 ```bash
 supabase start
 ```
 
 ### 4. Start the PowerSync service
 
+The sync rules are already configured in `docker/powersync.yaml` to sync all data from **counters** to all clients.
 ```bash
 docker compose --file ./docker/compose.yaml --env-file .env.local up -d
 ```
@@ -59,8 +61,6 @@ docker compose --file ./docker/compose.yaml --env-file .env.local up -d
 
 ```bash
 cd flutter_counter
-
-flutter pub get
 
 cp lib/app_config_template.dart lib/app_config.dart
 
