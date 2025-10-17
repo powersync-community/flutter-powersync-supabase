@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+
 import './models/counter.dart';
 import './powersync.dart';
 import './widgets/status_app_bar.dart';
