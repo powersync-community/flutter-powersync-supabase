@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:powersync/powersync.dart' hide Column;
 
 import '../powersync.dart';
+import 'key_value.dart';
 
 /// Displays PowerSync connection status
 class StatusSection extends StatelessWidget {
@@ -37,48 +38,19 @@ class _StatusSection extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 if (status != null) ...[
-                  _kv('connected', status.connected.toString()),
-                  _kv('connecting', status.connecting.toString()),
-                  _kv('uploading', status.uploading.toString()),
-                  _kv('downloading', status.downloading.toString()),
-                  _kv(
-                    'downloadProgress',
-                    status.downloadProgress?.downloadedFraction != null
+                  KeyValue(keyLabel: 'connected', value: status.connected.toString()),
+                  KeyValue(keyLabel: 'connecting', value: status.connecting.toString()),
+                  KeyValue(keyLabel: 'uploading', value: status.uploading.toString()),
+                  KeyValue(keyLabel: 'downloading', value: status.downloading.toString()),
+                  KeyValue(keyLabel: 'downloadProgress', value: status.downloadProgress?.downloadedFraction != null
                         ? '${(status.downloadProgress!.downloadedFraction * 100).toStringAsFixed(2)}%'
-                        : '0%',
-                  ),
-                  _kv('hasSynced', (status.hasSynced ?? false).toString()),
-                  _kv(
-                    'lastSyncedAt',
-                    status.lastSyncedAt?.toIso8601String() ?? 'N/A',
-                  ),
+                        : '0%'),
+                  KeyValue(keyLabel: 'hasSynced', value: (status.hasSynced ?? false).toString()),
+                  KeyValue(keyLabel: 'lastSyncedAt', value: status.lastSyncedAt?.toUtc().toString() ?? 'N/A'),
                 ],
               ],
             );
           },
-        ),
-      ),
-    );
-  }
-
-  Widget _kv(String keyLabel, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(
-          style: const TextStyle(
-            fontFamily: 'monospace',
-            color: Colors.black,
-            fontSize: 13,
-          ),
-          children: [
-            TextSpan(
-              text: '$keyLabel: ',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            TextSpan(text: value),
-          ],
         ),
       ),
     );
