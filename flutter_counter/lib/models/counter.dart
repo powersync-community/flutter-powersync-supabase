@@ -1,5 +1,8 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_supabase_template/models/schema.dart';
+import 'package:powersync/powersync.dart';
 import 'package:powersync/sqlite3_common.dart' as sqlite;
+import 'package:provider/provider.dart';
 
 import '../powersync.dart';
 
@@ -36,8 +39,37 @@ class Counter {
     );
   }
 
+  /// Increment the counter's value by one.
+  Future<void> increment(PowerSyncDatabase db) async {
+    await db.execute('UPDATE $countersTable SET count = ? WHERE id = ?', [
+      count + 1,
+      id,
+    ]);
+  }
+
+  /// Decrement the counter's value by one. No-op at zero.
+  Future<void> decrement(PowerSyncDatabase db) async {
+    if (count <= 0) return;
+    await db.execute('UPDATE $countersTable SET count = ? WHERE id = ?', [
+      count - 1,
+      id,
+    ]);
+  }
+
+  /// Delete this counter.
+  Future<void> delete(PowerSyncDatabase db) async {
+    await db.execute('DELETE FROM $countersTable WHERE id = ?', [id]);
+  }
+}
+
+/// Extension methods on BuildContext for Counter operations
+extension CounterContext on BuildContext {
+  /// Get the PowerSyncDatabase instance
+  PowerSyncDatabase get database => watch<PowerSyncDatabase>();
+
   /// Watch all counters.
-  static Stream<List<Counter>> watchCounters() {
+  Stream<List<Counter>> watchCounters() {
+    final db = read<PowerSyncDatabase>();
     return db.watch('SELECT * FROM $countersTable ORDER BY created_at, id').map(
       (results) {
         return results.map(Counter.fromRow).toList(growable: false);
@@ -46,7 +78,8 @@ class Counter {
   }
 
   /// Create a new counter.
-  static Future<Counter> create() async {
+  Future<Counter> createCounter() async {
+    final db = read<PowerSyncDatabase>();
     final results = await db.execute(
       '''
       INSERT INTO
@@ -57,27 +90,5 @@ class Counter {
       [0, getUserId()],
     );
     return Counter.fromRow(results.first);
-  }
-
-  /// Increment the counter's value by one.
-  Future<void> increment() async {
-    await db.execute('UPDATE $countersTable SET count = ? WHERE id = ?', [
-      count + 1,
-      id,
-    ]);
-  }
-
-  /// Decrement the counter's value by one. No-op at zero.
-  Future<void> decrement() async {
-    if (count <= 0) return;
-    await db.execute('UPDATE $countersTable SET count = ? WHERE id = ?', [
-      count - 1,
-      id,
-    ]);
-  }
-
-  /// Delete this counter.
-  Future<void> delete() async {
-    await db.execute('DELETE FROM $countersTable WHERE id = ?', [id]);
   }
 }

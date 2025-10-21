@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:powersync/powersync.dart';
+import 'package:provider/provider.dart';
 
 import './models/counter.dart';
 import './powersync.dart';
@@ -26,24 +28,32 @@ void main() async {
     }
   });
 
-  WidgetsFlutterBinding.ensureInitialized(); //required to get sqlite filepath from path_provider before UI has initialized
-  await openDatabase();
-  
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize database before starting the app
+  final database = await openDatabase();
+
+  runApp(MyApp(database: database));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final PowerSyncDatabase database;
+
+  const MyApp({super.key, required this.database});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'PowerSync Counter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return Provider<PowerSyncDatabase>(
+      create: (_) => database,
+      dispose: (_, value) => value.close(),
+      child: MaterialApp(
+        title: 'PowerSync Counter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: const CountersPage(),
       ),
-      home: CountersPage(),
     );
   }
 }
@@ -59,7 +69,7 @@ class CountersPage extends StatelessWidget {
       body: const _HomeBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Counter.create();
+          await context.createCounter();
         },
         tooltip: 'Add new counter',
         child: const Icon(Icons.add),
@@ -81,7 +91,8 @@ class CountersPage extends StatelessWidget {
               title: const Text('Sign Out'),
               onTap: () async {
                 Navigator.pop(context);
-                await logout();
+                final db = context.read<PowerSyncDatabase>();
+                await logout(db);
               },
             ),
           ],

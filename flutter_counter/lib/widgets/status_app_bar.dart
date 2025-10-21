@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:powersync/powersync.dart';
-
-import '../powersync.dart';
+import 'package:provider/provider.dart';
 
 /// App bar that reflects current PowerSync connection/sync status
 class StatusAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -15,6 +14,8 @@ class StatusAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final db = context.watch<PowerSyncDatabase>();
+
     return StreamBuilder(
       stream: db.statusStream,
       initialData: db.currentStatus,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:powersync/powersync.dart';
 
 import '../models/counter.dart';
 import 'counter_card.dart';
@@ -10,7 +12,7 @@ class CountersList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Counter>>(
-      stream: Counter.watchCounters(),
+      stream: context.watchCounters(),
       builder: (context, snapshot) {
         // Show loading indicator while data loads
         if (!snapshot.hasData) {
@@ -36,6 +38,7 @@ class CountersList extends StatelessWidget {
           itemCount: counters.length,
           itemBuilder: (context, index) {
             final counter = counters[index];
+            final db = context.read<PowerSyncDatabase>();
 
             return Dismissible(
               key: ValueKey(counter.id),
@@ -53,7 +56,7 @@ class CountersList extends StatelessWidget {
               ),
               onDismissed: (direction) async {
                 final messenger = ScaffoldMessenger.of(context);
-                await counter.delete();
+                await counter.delete(db);
                 messenger.showSnackBar(
                   const SnackBar(content: Text('Counter deleted')),
                 );

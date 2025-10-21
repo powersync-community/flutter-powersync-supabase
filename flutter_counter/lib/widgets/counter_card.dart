@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:powersync/powersync.dart' hide Column;
 
 import '../models/counter.dart';
 
@@ -10,6 +12,8 @@ class CounterCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final db = context.read<PowerSyncDatabase>();
+
     // Truncate the ID to first 8 characters for display
     final displayId = counter.id.length > 8
         ? '${counter.id.substring(0, 8)}...'
@@ -59,7 +63,7 @@ class CounterCard extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.remove, color: Colors.red),
                   onPressed: () async {
-                    await counter.decrement();
+                    await counter.decrement(db);
                   },
                 ),
                 // Current count display
@@ -84,7 +88,7 @@ class CounterCard extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.add, color: Colors.green),
                   onPressed: () async {
-                    await counter.increment();
+                    await counter.increment(db);
                   },
                 ),
               ],

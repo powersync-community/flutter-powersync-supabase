@@ -131,9 +131,6 @@ class SupabaseConnector extends PowerSyncBackendConnector {
   }
 }
 
-/// Global reference to the database
-late final PowerSyncDatabase db;
-
 bool isLoggedIn() {
   return Supabase.instance.client.auth.currentSession?.accessToken != null;
 }
@@ -160,9 +157,9 @@ Future<String> getDatabasePath() async {
 
 const options = SyncOptions(syncImplementation: SyncClientImplementation.rust);
 
-Future<void> openDatabase() async {
+Future<PowerSyncDatabase> openDatabase() async {
   // Open the local database and initialize sync/auth integrations
-  db = PowerSyncDatabase(
+  final PowerSyncDatabase db = PowerSyncDatabase(
     schema: schema,
     path: await getDatabasePath(),
     logger: attachedLogger,
@@ -178,19 +175,11 @@ Future<void> openDatabase() async {
   if (isLoggedIn()) {
     // If the user is already logged in, connect immediately.
     // Otherwise, connect once logged in.
-    // currentConnector = SupabaseConnector();
     db.connect(connector: currentConnector, options: options);
   } else {
     await signInAnonymously();
     db.connect(connector: currentConnector, options: options);
   }
-
-  // await signInAnonymously();
-  // final token = Supabase.instance.client.auth.currentSession?.accessToken;
-  // if (token != null) {
-  //   log.fine('Access token length: ${token.length}');
-  // }
-  // db.connect(connector: currentConnector, options: options);
 
   Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
     final AuthChangeEvent event = data.event;
@@ -208,10 +197,12 @@ Future<void> openDatabase() async {
       currentConnector?.prefetchCredentials();
     }
   });
+
+  return db;
 }
 
 /// Explicit sign out - clear database and log out.
-Future<void> logout() async {
+Future<void> logout(PowerSyncDatabase db) async {
   await Supabase.instance.client.auth.signOut();
   await db.disconnectAndClear();
 }

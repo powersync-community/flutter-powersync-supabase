@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Widget for displaying key-value pairs with monospace formatting
 class KeyValue extends StatelessWidget {
-  const KeyValue({
-    super.key,
-    required this.keyLabel,
-    required this.value,
-  });
+  const KeyValue({super.key, required this.keyLabel, required this.value});
 
   final String keyLabel;
   final String value;
