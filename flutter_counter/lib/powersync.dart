@@ -146,7 +146,7 @@ String? getUserId() {
 }
 
 Future<String> getDatabasePath() async {
-  const dbFilename = 'powersync-benchmarks.db';
+  const dbFilename = 'example.db';
   // getApplicationSupportDirectory is not supported on Web
   if (kIsWeb) {
     return dbFilename;
