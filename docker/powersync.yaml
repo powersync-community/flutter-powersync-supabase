@@ -16,7 +16,7 @@ port: !env PS_PORT
 sync_config:
   content: |
     config:
-      edition: 2
+      edition: 3
 
     streams:
       counters:
