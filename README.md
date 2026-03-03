@@ -52,7 +52,7 @@ supabase start
 
 ### 4. Start the PowerSync service
 
-The sync rules are already configured in `docker/powersync.yaml` to sync all data from **counters** to all clients.
+The sync config is already configured in `docker/powersync.yaml` to sync all data from **counters** to all clients using sync streams.
 ```bash
 docker compose --file ./docker/compose.yaml --env-file .env.local up -d
 ```
