@@ -13,12 +13,15 @@ storage:
 
 port: !env PS_PORT
 
-sync_rules:
+sync_config:
   content: |
-    bucket_definitions:
-      global:
-        data:
-          - SELECT * FROM counters
+    config:
+      edition: 3
+
+    streams:
+      counters:
+        query: SELECT * FROM counters
+        auto_subscribe: true
 
 client_auth:
   jwks_uri: !env PS_BACKEND_JWKS_URI
