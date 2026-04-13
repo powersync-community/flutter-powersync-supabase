@@ -68,3 +68,5 @@ cp lib/app_config_template.dart lib/app_config.dart
 
 flutter run
 ```
+
+To run the app on the web, run `dart run powersync:setup_web` first.
