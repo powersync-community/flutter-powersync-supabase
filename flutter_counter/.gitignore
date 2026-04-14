@@ -50,3 +50,7 @@ app.*.map.json
 
 # secrets
 app_config.dart
+
+# PowerSync web files
+web/powersync_db.worker.js
+web/sqlite3.wasm

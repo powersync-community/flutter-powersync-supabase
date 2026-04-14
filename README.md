@@ -43,6 +43,8 @@ Run the following command to generate the `./supabase/signing_keys.json` file.
 supabase gen signing-key
 ```
 
+Uncomment the `signing_keys_path = "./signing_keys.json"` line in `config.toml` afterwards.
+
 ### 3. Start Supabase locally
 
 There is already a migration in `supabase/migrations/20250819090132_counters.sql` that creates the **counters** table, creates the **powersync** publication and seeds one counter record
@@ -66,3 +68,5 @@ cp lib/app_config_template.dart lib/app_config.dart
 
 flutter run
 ```
+
+To run the app on the web, run `dart run powersync:setup_web` first.
